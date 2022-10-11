@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="icon" type="image/png" href="img/favicon-16x16.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/all.min.css" />
+    <link href='https://css.gg/sun.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="searchCity">
+          <input class="city" type="search" placeholder="City" />
+          <button>Search</button>
+        </div>
+        <div class="location">
+          <button>
+            <i class="fa-solid fa-location-dot"></i> Your location Weather
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <section class="today">
+          <div class="temp zoom">
+            <div class="icon">
+              <button>
+                <i type="button" class="fa-solid fa-rotate"></i>
+              </button>
+            </div>
+            <h2 class="cityName">Cairo</h2>
+            <h2 class="cityTemp">30 <sup>o</sup>C</h2>
+            <h2 class="State">Clear</h2>
+          </div>
+          <div class="details zoom">
+            <div class="names">
+                <p >Felt Temp.</p>
+                <p>Humidity</p>
+                <p>Wind</p>
+                <p>Visibility</p>
+                <p>Max Temp.</p>
+                <p>Min Temp.</p>
+            </div>
+            <div class="values">
+                <p class="feltTemp">
+                    29.36<sup>o</sup> C
+                </p>
+                <p class="humidity">29%</p>
+                <p class="wind">15.62 Km/h</p>
+                <p class="visibility">10.00 Km</p>
+                <p class="maxTemp">30.71<sup>o</sup></p>
+                <p class="minTemp">30.71<sup>o</sup> C</p>
+            </div>
+            </div>
+          <div class="map zoom">
+            <iframe  height="300" width="100%" loading="lazy" allowfullscreen="" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAq15HbfCRMW7RqNb5LUNyOLyfzpYI0wl4&amp;q=Cairo"></iframe>
+          </div>
+          </div>
+        </section>
+        <div class="next">
+          <div class="container">
+            <div class="day-1 zoom">
+            <div class="dayDetails">
+              <p class="date">11/10/2022</p>
+              <p class="name">Tuesday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>28 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>23 <sup>o</sup>C</p>
+              <p class="state">Clouds</p>
+            </div>
+          </div>
+          <div class="day-2 zoom">
+            <div class="dayDetails">
+              <p class="date">12/10/2022</p>
+              <p class="name">Wednesday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>27 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>23 <sup>o</sup>C</p>
+              <p class="state">Clouds</p>
+            </div>
+          </div>
+          <div class="day-3 zoom">
+            <div class="dayDetails">
+              <p class="date">13/10/2022</p>
+              <p class="name">Thrusday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>26 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>22 <sup>o</sup>C</p>
+              <p class="state">Clouds</p>
+            </div>
+          </div>
+          <div class="day-4 zoom">
+            <div class="dayDetails">
+              <p class="date">14/10/2022</p>
+              <p class="name">Friday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>26 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>22 <sup>o</sup>C</p>
+              <p class="state">Clear</p>
+            </div>
+          </div>
+          <div class="day-5 zoom">
+            <div class="dayDetails">
+              <p class="date">15/10/2022</p>
+              <p class="name">Saturday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>26 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>25 <sup>o</sup>C</p>
+              <p class="state">Clouds</p>
+            </div>
+          </div>
+          <div class="day-6 zoom">
+            <div class="dayDetails">
+              <p class="date">16/10/2022</p>
+              <p class="name">Sunday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>30 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>23 <sup>o</sup>C</p>
+              <p class="state">Rain</p>
+            </div>
+          </div>
+          <div class="day-7 zoom">
+            <div class="dayDetails">
+              <p class="date">17/10/2022</p>
+              <p class="name">Monday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>26 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>22 <sup>o</sup>C</p>
+              <p class="state">Clear</p>
+            </div>
+          </div>
+          <div class="day-8 zoom">
+            <div class="dayDetails">
+              <p class="date">18/10/2022</p>
+              <p class="name">Tuesday</p>
+            </div>
+            <div class="temps">
+              <p class="morning"><i class="gg-sun"></i>25 <sup>o</sup>C</p>
+              <p class="night"><i class="fa-regular fa-moon"></i>22 <sup>o</sup>C</p>
+              <p class="state">Clear</p>
+            </div>
+          </div>
+        </div>
+      </div>
+     </div>
+    </main>
+    <footer>
+      <marquee behavior="scroll" direction="left">Made with love by Toxn</marquee>
+    </footer>
+  </body>
+</html>
