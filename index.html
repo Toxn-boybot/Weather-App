@@ -35,8 +35,8 @@
         <section class="today">
           <div class="temp zoom">
             <div class="icon">
-              <button>
-                <i type="button" class="fa-solid fa-rotate"></i>
+              <button id="refreshButton" onclick="spinning()">
+                <i id="spinner" type="button" class="fa-solid fa-rotate"></i>
               </button>
             </div>
             <h2 class="cityName">Cairo</h2>
@@ -95,7 +95,7 @@
           <div class="day-3 zoom">
             <div class="dayDetails">
               <p class="date">13/10/2022</p>
-              <p class="name">Thrusday</p>
+              <p class="name">Thursday</p>
             </div>
             <div class="temps">
               <p class="morning"><i class="gg-sun"></i>26 <sup>o</sup>C</p>
@@ -165,5 +165,6 @@
     <footer>
       <marquee behavior="scroll" direction="left">Made with love by Toxn</marquee>
     </footer>
+    <script src="js/master.js"></script>
   </body>
 </html>
