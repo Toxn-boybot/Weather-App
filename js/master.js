@@ -1,38 +1,133 @@
+// Global Variables
+const API_KEY = 'fe586bfd0c39e7cce1749fe151398673';
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?';
+let mainContent = document.querySelector('main');
+let todaySection = document.querySelector('.today');
+let tempContainer = document.querySelector('.temp');
+
+const cityNameInp = document.querySelector('#cityName');
+const searchCity = document.querySelector('#searchCity');
+
+function searchHandler(e) {
+	e.preventDefault();
+
+	let cityName = cityNameInp.value;
+
+	getWeatherDataByCity(cityName).then((data) => {
+		const { name, main, weather } = data;
+		renderTemp(name, Math.trunc(main.temp), weather[0].main);
+	});
+}
+searchCity.addEventListener('submit', searchHandler);
+// Approach #1
+// const getData = (cityName) => {
+//   let response = fetch(`${BASE_URL}q=${cityName}&appid=${API_KEY}`)
+//     .then((res) => res.json())
+//     .then((data) => console.log(data));
+// };
+
+// Approach #2
+const getWeatherDataByCity = async (cityName) => {
+	let response = await fetch(
+		`${BASE_URL}q=${cityName}&appid=${API_KEY}&units=metric`
+	);
+	return await response.json();
+};
+
 //Make the refresh button spin on click
 function spinning() {
-  const spinner = document.getElementById("spinner");
-  spinner.classList.add("spinner");
-  //Show notification when clicking the refresh button using toastr js
-  const refreshButton = document.getElementById("refreshButton");
-  refreshButton.blur();
-  //remove the spin class again
-  const spinTime = setTimeout(RemoveSpin, 1000);
-  function RemoveSpin() {
-    spinner.classList.remove("spinner");
-  }
+	const spinner = document.getElementById('spinner');
+	spinner.classList.add('spinner');
+
+	//Show notification when clicking the refresh button using toastr js
+	toastr.success('Weather updated');
+	//remove the focus from the button
+	const refreshButton = document.getElementById('refreshButton');
+	refreshButton.blur();
+	//remove the spin class again
+	const spinTime = setTimeout(RemoveSpin, 1000);
+	function RemoveSpin() {
+		spinner.classList.remove('spinner');
+	}
 }
 
-// refreshButton.onclick = function () {
-//         toastr.success("Item added to your cart");
-// }
-refreshButton.addEventListener("click", function () {
-  toastr.success("Item added to your cart");
-});
-
 toastr.options = {
-  closeButton: true,
-  debug: false,
-  newestOnTop: false,
-  progressBar: false,
-  positionClass: "toast-top-right",
-  preventDuplicates: false,
-  onclick: null,
-  showDuration: "300",
-  hideDuration: "1000",
-  timeOut: "5000",
-  extendedTimeOut: "1000",
-  showEasing: "swing",
-  hideEasing: "linear",
-  showMethod: "fadeIn",
-  hideMethod: "fadeOut",
+	closeButton: true,
+	debug: false,
+	newestOnTop: false,
+	progressBar: false,
+	positionClass: 'toast-top-right',
+	preventDuplicates: false,
+	onclick: null,
+	showDuration: '300',
+	hideDuration: '1000',
+	timeOut: '5000',
+	extendedTimeOut: '1000',
+	showEasing: 'swing',
+	hideEasing: 'linear',
+	showMethod: 'fadeIn',
+	hideMethod: 'fadeOut',
 };
+
+function renderTemp(city, temp, state) {
+	tempContainer.innerHTML = '';
+	const html = `
+    <div class="icon">
+      <button id="refreshButton" onclick="spinning()">
+        <i id="spinner" type="button" class="fa-solid fa-rotate"></i>
+      </button>
+    </div>
+    <h2 class="cityName">${city}</h2>
+    <h2 class="cityTemp">
+      ${temp} <sup>o</sup>C
+    </h2>
+    <h2 class="State">${state}</h2>
+  `;
+	tempContainer.insertAdjacentHTML('afterbegin', html);
+}
+
+function getCurrentLocation() {
+	navigator.geolocation.getCurrentPosition((position) => {
+		getWeatherDataByLocation(
+			position.coords.latitude,
+			position.coords.longitude
+		).then((data) => {
+			const { name, main, weather } = data;
+			renderTemp(name, Math.trunc(main.temp), weather[0].main);
+		});
+	}, showError);
+}
+
+getCurrentLocation();
+
+const getWeatherDataByLocation = async (lat, lon) => {
+	let response = await fetch(
+		`${BASE_URL}lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+	);
+	return await response.json();
+};
+
+function showError(error) {
+	console.log(error);
+	switch (error.code) {
+		case error.PERMISSION_DENIED:
+			mainContent.hidden = true;
+			toastr.error('User denied the request for Geolocation.');
+			break;
+		case error.POSITION_UNAVAILABLE:
+			mainContent.hidden;
+			toastr.error('Location information is unavailable.');
+			break;
+		case error.TIMEOUT:
+			mainContent.hidden;
+			toastr.error('The request to get user location timed out.');
+			break;
+		case error.UNKNOWN_ERROR:
+			mainContent.hidden;
+			toastr.error('An unknown error occurred.');
+			break;
+	}
+}
+
+
+	
