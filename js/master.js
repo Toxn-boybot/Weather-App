@@ -99,7 +99,7 @@ function getCurrentLocation() {
 			renderTemp(name, Math.trunc(main.temp), weather[0].main);
 			mainContent.hidden = false;
 			preloader.style.display = 'none';
-			toastr.success("Your location weather updated");
+			toastr.success("Weather updated");
 		});
 	}, showError);
 }
