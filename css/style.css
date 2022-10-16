@@ -55,6 +55,19 @@ body {
   animation-timing-function: linear;
 }
 /* Start Loader  */
+.preloader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 155px);
+  
+}
+.preloader p{
+  font-size: 17px;
+    font-weight: 600;
+    color:#3498db ;
+}
 .loader {
   border: 16px solid #f3f3f3;
   border-radius: 50%;

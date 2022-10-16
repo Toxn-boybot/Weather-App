@@ -2,17 +2,20 @@
 const API_KEY = 'fe586bfd0c39e7cce1749fe151398673';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?';
 let mainContent = document.querySelector('main');
+mainContent.hidden = true;
 let todaySection = document.querySelector('.today');
 let tempContainer = document.querySelector('.temp');
-
+let preloader = document.querySelector('.preloader');
 const cityNameInp = document.querySelector('#cityName');
 const searchCity = document.querySelector('#searchCity');
+const yourLocationWeather = document.querySelector('#yourLocationWeather');
+
+//gives you the weather data for your current location
+yourLocationWeather.addEventListener('click', getCurrentLocation);
 
 function searchHandler(e) {
 	e.preventDefault();
-
 	let cityName = cityNameInp.value;
-
 	getWeatherDataByCity(cityName).then((data) => {
 		const { name, main, weather } = data;
 		renderTemp(name, Math.trunc(main.temp), weather[0].main);
@@ -94,6 +97,9 @@ function getCurrentLocation() {
 		).then((data) => {
 			const { name, main, weather } = data;
 			renderTemp(name, Math.trunc(main.temp), weather[0].main);
+			mainContent.hidden = false;
+			preloader.style.display = 'none';
+			toastr.success("Your location weather updated");
 		});
 	}, showError);
 }
@@ -112,22 +118,23 @@ function showError(error) {
 	switch (error.code) {
 		case error.PERMISSION_DENIED:
 			mainContent.hidden = true;
+			preloader.style.display = 'flex';
 			toastr.error('User denied the request for Geolocation.');
 			break;
 		case error.POSITION_UNAVAILABLE:
-			mainContent.hidden;
+			mainContent.hidden = true;
+			preloader.style.display = 'flex';
 			toastr.error('Location information is unavailable.');
 			break;
 		case error.TIMEOUT:
-			mainContent.hidden;
+			mainContent.hidden = true;
+			preloader.style.display = 'flex';
 			toastr.error('The request to get user location timed out.');
 			break;
 		case error.UNKNOWN_ERROR:
-			mainContent.hidden;
+			mainContent.hidden = true;
+			preloader.style.display = 'flex';
 			toastr.error('An unknown error occurred.');
 			break;
 	}
 }
-
-
-	

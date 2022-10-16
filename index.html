@@ -27,11 +27,12 @@
 						type="search"
 						name="city"
 						placeholder="City"
+						required
 					/>
 					<button type="submit">Search</button>
 				</form>
 				<div class="location">
-					<button>
+					<button id="yourLocationWeather">
 						<i class="fa-solid fa-location-dot"></i> Your location Weather
 					</button>
 				</div>
@@ -181,9 +182,10 @@
 				</div>
 			</div>
 		</main>
-		<!-- <div>
+		<div class="preloader">
+			<p>You need to turn on your location first</p>
 			<div class="loader"></div>
-		</div> -->
+		</div>
 		<footer>
 			<marquee behavior="scroll" direction="left"
 				>Made with love by Toxn</marquee
