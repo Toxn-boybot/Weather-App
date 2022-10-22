@@ -19,19 +19,23 @@ yourLocationWeather.addEventListener('click', getCurrentLocation);
 function searchHandler(e) {
 	e.preventDefault();
 	let cityName = cityNameInp.value;
-	getWeatherDataByCity(cityName).then((data) => {
-		const { name, main, weather, wind, visibility } = data;
-		renderTemp(name, Math.trunc(main.temp), weather[0].main);
-		renderDetails(
-			main.feels_like,
-			main.humidity,
-			wind.speed,
-			(visibility * 0.001).toFixed(2),
-			main.temp_max,
-			main.temp_min
-		);
-		renderMap(name);
-	});
+	getWeatherDataByCity(cityName)
+		.then((data) => {
+			const { name, main, weather, wind, visibility } = data;
+			renderTemp(name, Math.trunc(main.temp), weather[0].main);
+			renderDetails(
+				main.feels_like,
+				main.humidity,
+				wind.speed,
+				(visibility * 0.001).toFixed(2),
+				main.temp_max,
+				main.temp_min
+			);
+			renderMap(name);
+		})
+		.catch((e) => {
+			toastr.error('Location doesn\'t exist.');
+		});;
 }
 searchCity.addEventListener('submit', searchHandler);
 // Approach #1
@@ -45,7 +49,7 @@ searchCity.addEventListener('submit', searchHandler);
 const getWeatherDataByCity = async (cityName) => {
 	let response = await fetch(
 		`${BASE_URL}q=${cityName}&appid=${API_KEY}&units=metric`
-	);
+	)
 	return await response.json();
 };
 
