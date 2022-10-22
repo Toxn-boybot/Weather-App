@@ -5,7 +5,9 @@ let mainContent = document.querySelector('main');
 mainContent.hidden = true;
 let todaySection = document.querySelector('.today');
 let tempContainer = document.querySelector('.temp');
+let detailsContainer = document.querySelector('.values');
 let preloader = document.querySelector('.preloader');
+let mapContainer = document.querySelector('.map');
 const cityNameInp = document.querySelector('#cityName');
 const searchCity = document.querySelector('#searchCity');
 const yourLocationWeather = document.querySelector('#yourLocationWeather');
@@ -13,12 +15,22 @@ const yourLocationWeather = document.querySelector('#yourLocationWeather');
 //gives you the weather data for your current location
 yourLocationWeather.addEventListener('click', getCurrentLocation);
 
+//searches the city name input
 function searchHandler(e) {
 	e.preventDefault();
 	let cityName = cityNameInp.value;
 	getWeatherDataByCity(cityName).then((data) => {
-		const { name, main, weather } = data;
+		const { name, main, weather, wind, visibility } = data;
 		renderTemp(name, Math.trunc(main.temp), weather[0].main);
+		renderDetails(
+			main.feels_like,
+			main.humidity,
+			wind.speed,
+			(visibility * 0.001).toFixed(2),
+			main.temp_max,
+			main.temp_min
+		);
+		renderMap(name);
 	});
 }
 searchCity.addEventListener('submit', searchHandler);
@@ -72,6 +84,7 @@ toastr.options = {
 	hideMethod: 'fadeOut',
 };
 
+//rendering the temperature section
 function renderTemp(city, temp, state) {
 	tempContainer.innerHTML = '';
 	const html = `
@@ -89,17 +102,54 @@ function renderTemp(city, temp, state) {
 	tempContainer.insertAdjacentHTML('afterbegin', html);
 }
 
+//rendering the details section
+function renderDetails(FT, humid, windS, visi, maxT, minT) {
+	detailsContainer.innerHTML = '';
+	const html = `
+							<p class="feltTemp">${FT}<sup>o</sup> C</p>
+							<p class="humidity">${humid}%</p>
+							<p class="wind">${windS} Km/h</p>
+							<p class="visibility">${visi} Km</p>
+							<p class="maxTemp">${maxT}<sup>o</sup> C</p>
+							<p class="minTemp">${minT}<sup>o</sup> C</p>
+	`;
+	detailsContainer.insertAdjacentHTML('afterbegin', html);
+}
+//change the map location in the map window
+function renderMap(cityName) {
+	mapContainer.innerHTML = '';
+	const html = `
+	<iframe 
+							height="300"
+							width="100%"
+							loading="lazy"
+							allowfullscreen=""
+							referrerpolicy="no-referrer-when-downgrade"
+							src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAq15HbfCRMW7RqNb5LUNyOLyfzpYI0wl4&amp;q=${cityName}"
+						></iframe>
+	`;
+	mapContainer.insertAdjacentHTML('afterbegin', html);
+}
 function getCurrentLocation() {
 	navigator.geolocation.getCurrentPosition((position) => {
 		getWeatherDataByLocation(
 			position.coords.latitude,
 			position.coords.longitude
 		).then((data) => {
-			const { name, main, weather } = data;
+			const { name, main, weather, wind, visibility } = data;
 			renderTemp(name, Math.trunc(main.temp), weather[0].main);
+			renderDetails(
+				main.feels_like,
+				main.humidity,
+				wind.speed,
+				(visibility * 0.001).toFixed(2),
+				main.temp_max,
+				main.temp_min
+			);
+			renderMap(name);
 			mainContent.hidden = false;
 			preloader.style.display = 'none';
-			toastr.success("Weather updated");
+			toastr.success('Weather updated');
 		});
 	}, showError);
 }
