@@ -32,6 +32,7 @@ function searchHandler(e) {
 				main.temp_min
 			);
 			renderMap(name);
+			mainContent.hidden = false;
 		})
 		.catch((e) => {
 			toastr.error('Location doesn\'t exist.');
