@@ -36,8 +36,8 @@ function searchHandler(e) {
 			preloader.style.display = 'none';
 		})
 		.catch((e) => {
-			toastr.error('Location doesn\'t exist.');
-		});;
+			toastr.error("Location doesn't exist.");
+		});
 }
 searchCity.addEventListener('submit', searchHandler);
 // Approach #1
@@ -51,7 +51,7 @@ searchCity.addEventListener('submit', searchHandler);
 const getWeatherDataByCity = async (cityName) => {
 	let response = await fetch(
 		`${BASE_URL}q=${cityName}&appid=${API_KEY}&units=metric`
-	)
+	);
 	return await response.json();
 };
 
@@ -69,6 +69,8 @@ function spinning() {
 	const spinTime = setTimeout(RemoveSpin, 1000);
 	function RemoveSpin() {
 		spinner.classList.remove('spinner');
+		//refresh data for current city
+		dataRefresher();
 	}
 }
 
@@ -99,7 +101,7 @@ function renderTemp(city, temp, state) {
         <i id="spinner" type="button" class="fa-solid fa-rotate"></i>
       </button>
     </div>
-    <h2 class="cityName">${city}</h2>
+    <h2 id="currCity" class="cityName">${city}</h2>
     <h2 class="cityTemp">
       ${temp} <sup>o</sup>C
     </h2>
@@ -193,4 +195,24 @@ function showError(error) {
 			toastr.error('An unknown error occurred.');
 			break;
 	}
+}
+
+//make the spinner refresh the weather data for the targeted city
+function dataRefresher() {
+	let currCity = document.getElementById('currCity').innerHTML;
+	getWeatherDataByCity(currCity).then((data) => {
+		const { name, main, weather, wind, visibility } = data;
+		renderTemp(name, Math.trunc(main.temp), weather[0].main);
+		renderDetails(
+			main.feels_like,
+			main.humidity,
+			wind.speed,
+			(visibility * 0.001).toFixed(2),
+			main.temp_max,
+			main.temp_min
+		);
+		renderMap(name);
+		mainContent.hidden = false;
+		preloader.style.display = 'none';
+	});
 }
