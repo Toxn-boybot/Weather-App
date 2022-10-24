@@ -33,6 +33,7 @@ function searchHandler(e) {
 			);
 			renderMap(name);
 			mainContent.hidden = false;
+			preloader.style.display = 'none';
 		})
 		.catch((e) => {
 			toastr.error('Location doesn\'t exist.');
