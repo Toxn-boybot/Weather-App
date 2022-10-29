@@ -8,49 +8,31 @@ let tempContainer = document.querySelector('.temp');
 let detailsContainer = document.querySelector('.values');
 let preloader = document.querySelector('.preloader');
 let mapContainer = document.querySelector('.map');
+let nextContainer = document.querySelector('.next .container');
 const cityNameInp = document.querySelector('#cityName');
 const searchCity = document.querySelector('#searchCity');
 const yourLocationWeather = document.querySelector('#yourLocationWeather');
 
-//gives you the weather data for your current location
-yourLocationWeather.addEventListener('click', getCurrentLocation);
-
-//searches the city name input
-function searchHandler(e) {
-	e.preventDefault();
-	let cityName = cityNameInp.value;
-	getWeatherDataByCity(cityName)
-		.then((data) => {
-			const { name, main, weather, wind, visibility } = data;
-			renderTemp(name, Math.trunc(main.temp), weather[0].main);
-			renderDetails(
-				main.feels_like,
-				main.humidity,
-				wind.speed,
-				(visibility * 0.001).toFixed(2),
-				main.temp_max,
-				main.temp_min
-			);
-			renderMap(name);
-			mainContent.hidden = false;
-			preloader.style.display = 'none';
-		})
-		.catch((e) => {
-			toastr.error("Location doesn't exist.");
-		});
-}
-searchCity.addEventListener('submit', searchHandler);
-// Approach #1
-// const getData = (cityName) => {
-//   let response = fetch(`${BASE_URL}q=${cityName}&appid=${API_KEY}`)
-//     .then((res) => res.json())
-//     .then((data) => console.log(data));
-// };
-
-// Approach #2
+// fetch data from openWeather API
 const getWeatherDataByCity = async (cityName) => {
 	let response = await fetch(
 		`${BASE_URL}q=${cityName}&appid=${API_KEY}&units=metric`
+	);
+	return await response.json();
+};
+
+//get weather data by location
+const getWeatherDataByLocation = async (lat, lon) => {
+	let response = await fetch(
+		`${BASE_URL}lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+	);
+	return await response.json();
+};
+
+//fetch api for the next 8 days
+const weatherForNextDays = async (cityName) => {
+	let response = await fetch(
+		`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${cityName}/next7days?unitGroup=metric&key=23VPXAF7FCGPMNCAXB9QQK7SY`
 	);
 	return await response.json();
 };
@@ -74,6 +56,7 @@ function spinning() {
 	}
 }
 
+//toastr options
 toastr.options = {
 	closeButton: true,
 	debug: false,
@@ -123,7 +106,8 @@ function renderDetails(FT, humid, windS, visi, maxT, minT) {
 	`;
 	detailsContainer.insertAdjacentHTML('afterbegin', html);
 }
-//change the map location in the map window
+
+//render the map in the map window
 function renderMap(cityName) {
 	mapContainer.innerHTML = '';
 	const html = `
@@ -138,6 +122,68 @@ function renderMap(cityName) {
 	`;
 	mapContainer.insertAdjacentHTML('afterbegin', html);
 }
+
+//render the weather for the next 7 days
+function renderNext(days) {
+	nextContainer.innerHTML = '';
+	let html = '';
+	days.forEach((day, index) => {
+		const { datetime, tempmax, tempmin, conditions, preciptype } = day;
+		let today;
+		switch (new Date(datetime).getDay()) {
+			case 0:
+				today = 'Sunday';
+				break;
+			case 1:
+				today = 'Monday';
+				break;
+			case 2:
+				today = 'Tuesday';
+				break;
+			case 3:
+				today = 'Wednesday';
+				break;
+			case 4:
+				today = 'Thursday';
+				break;
+			case 5:
+				today = 'Friday';
+				break;
+			case 6:
+				today = 'Saturday';
+		}
+
+		html += `
+		 <div class='day-${index + 1} zoom'>
+			<div class='dayDetails'>
+				<p class='date'>${datetime}</p>
+				<p class='name'>${today}</p>
+			</div>
+			<div class='temps'>
+				<p class='morning'>
+					<i class='gg-sun'></i>${Math.trunc(tempmax)} <sup>o</sup>C
+				</p>
+				<p class='night'>
+					<i class='fa-regular fa-moon'></i>${Math.trunc(tempmin)} <sup>o</sup>C
+				</p>
+				<p class='state'>${
+					(preciptype?.at(0) ?? conditions)
+						.replace('Partially cloudy', 'Cloudy')
+						.charAt(0)
+						.toUpperCase() +
+					(preciptype?.at(0) ?? conditions)
+						.replace('Partially cloudy', 'Cloudy')
+						.slice(1)
+				}</p>
+			</div>
+		</div>
+		`;
+	});
+
+	nextContainer.insertAdjacentHTML('afterbegin', html);
+}
+
+//get current location and render data
 function getCurrentLocation() {
 	navigator.geolocation.getCurrentPosition((position) => {
 		getWeatherDataByLocation(
@@ -158,18 +204,17 @@ function getCurrentLocation() {
 			mainContent.hidden = false;
 			preloader.style.display = 'none';
 			toastr.success('Weather updated');
+			return name;
 		});
+		weatherForNextDays(
+			`${position.coords.latitude},${position.coords.longitude}`
+		).then(({ days }) => renderNext(days));
 	}, showError);
 }
 
 getCurrentLocation();
 
-const getWeatherDataByLocation = async (lat, lon) => {
-	let response = await fetch(
-		`${BASE_URL}lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
-	);
-	return await response.json();
-};
+
 
 function showError(error) {
 	console.log(error);
@@ -212,7 +257,46 @@ function dataRefresher() {
 			main.temp_min
 		);
 		renderMap(name);
+		weatherForNextDays(currCity).then(({ days }) => {
+			renderNext(days);
+		});
 		mainContent.hidden = false;
 		preloader.style.display = 'none';
 	});
 }
+
+
+
+
+//gives you the weather data for your current location
+yourLocationWeather.addEventListener('click', getCurrentLocation);
+
+
+//searches the city name input
+function searchHandler(e) {
+	e.preventDefault();
+	let cityName = cityNameInp.value;
+	getWeatherDataByCity(cityName)
+		.then((data) => {
+			const { name, main, weather, wind, visibility } = data;
+			renderTemp(name, Math.trunc(main.temp), weather[0].main);
+			renderDetails(
+				main.feels_like,
+				main.humidity,
+				wind.speed,
+				(visibility * 0.001).toFixed(2),
+				main.temp_max,
+				main.temp_min
+			);
+			renderMap(name);
+			mainContent.hidden = false;
+			preloader.style.display = 'none';
+		})
+		.catch((e) => {
+			toastr.error("Location doesn't exist.");
+		});
+	weatherForNextDays(cityName).then(({ days }) => {
+		renderNext(days);
+	});
+}
+searchCity.addEventListener('submit', searchHandler);
