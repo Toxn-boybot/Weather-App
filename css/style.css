@@ -419,4 +419,7 @@ footer marquee {
 	color: var(--mainColor);
 	font-weight: 900;
 }
+footer marquee span{
+	    color: #c71313b5;
+}
 /* End Footer  */
