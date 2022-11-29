@@ -61,6 +61,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	height: calc(100vh - 155px);
+	min-height: 490px;
 }
 .preloader p {
 	font-size: 17px;
